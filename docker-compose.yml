@@ -1,0 +1,28 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: goody2-2api-nginx
+    restart: always
+    ports:
+      - "${NGINX_PORT:-8088}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+    networks:
+      - goody2-net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: goody2-2api-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - goody2-net
+
+networks:
+  goody2-net:
+    driver: bridge
